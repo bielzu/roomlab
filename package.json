@@ -1,0 +1,16 @@
+{
+  "name": "roomlab-v4",
+  "version": "4.2.0",
+  "private": true,
+  "description": "ROOMLAB: simulador 3D PWA de ambientes em escala real com quatro espaços",
+  "scripts": {
+    "start": "node server.cjs",
+    "check": "node --check dist/app.js",
+    "test": "node tests/placement.cjs && node tests/planner.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module",
+  "license": "MIT"
+}

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#151818" />
+  <meta name="description" content="ROOMLAB: organize seu quarto, sala, banheiro e área externa com medidas reais em um simulador 3D instalável e offline." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+  <title>ROOMLAB V4.2 — Seu espaço real em 3D</title>
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+<header>
+  <a class="brand" href="./">ROOM<span>LAB</span><small>ESTÚDIO DE ESPAÇOS</small></a>
+  <div class="roomname"><strong id="roomtitle">Meu quarto</strong><span id="roomdimensions">4 × 4 m</span></div>
+  <div class="header-space"><label for="spacepick">AMBIENTE</label>
+    <select id="spacepick" aria-label="Escolher ambiente">
+      <option value="quarto">🛏️ Quarto</option>
+      <option value="sala">🛋️ Sala</option>
+      <option value="banheiro">🚿 Banheiro</option>
+      <option value="externa">🌿 Área externa</option>
+    </select>
+  </div>
+  <div class="wallet"><small>MODO CRIATIVO</small><strong id="money">∞ Livre</strong></div>
+</header>
+<main>
+  <aside id="shop">
+    <div class="sectiontop"><div><small>ESCOLHA. COMBINE. CRIE.</small><h1>Seu espaço,<br>suas regras.</h1></div><span class="edition">V4.2</span></div>
+    <p class="shop-intro">Móveis e acessórios sem limite de dinheiro em escala. Monte o ambiente real ou invente um novo.</p>
+    <div class="tabs" aria-label="Itens por ambiente"><button class="active" data-cat="quarto">Quarto</button><button data-cat="sala">Sala</button><button data-cat="banheiro">Banheiro</button><button data-cat="externa">Área externa</button></div>
+    <div id="catalog"></div>
+    <footer class="shopfoot"><span>◈</span> Arraste os móveis e ajuste as medidas no painel de seleção.</footer>
+  </aside>
+  <section id="viewport" aria-label="Editor de ambientes 3D">
+    <div class="sceneheading"><span class="pill" id="spacename">QUARTO</span><h2>Seu espaço real.<br><span>Suas possibilidades.</span></h2></div>
+    <div class="viewtools"><button id="wallswitch" title="Mostrar ou ocultar as paredes próximas">▣ 4 paredes</button><button id="gridtoggle" title="Mostrar grade de um metro">⌗ Grade 1m</button><button id="day" title="Alternar iluminação">☀ Dia</button><button id="resetcam" title="Centralizar a câmera">⌖ Centralizar</button></div>
+    <div id="loading">Preparando seu espaço…</div>
+    <div class="scenefoot"><span id="hint">Arraste para girar a câmera · Role para aproximar</span><div class="modes"><button id="edit" class="active">◇ Editar</button><button id="explore">◎ Explorar</button></div></div>
+    <div id="selection" hidden>
+      <div class="selected-head"><strong id="selectedname"></strong><span>Arraste para mover · Dimensões em metros</span></div>
+      <div class="item-measures">
+        <label>L <input id="itemwidth" type="number" min="0.08" max="8" step="0.01" aria-label="Largura do móvel em metros"></label>
+        <label>P <input id="itemdepth" type="number" min="0.08" max="8" step="0.01" aria-label="Profundidade do móvel em metros"></label>
+        <label>A <input id="itemheight" type="number" min="0.04" max="5" step="0.01" aria-label="Altura do móvel em metros"></label>
+        <button id="applyitemsize" title="Aplicar medidas do móvel">Aplicar medidas</button>
+      </div>
+      <div class="position-measures"><label>Posição X (m)<input id="itemx" type="number" step="0.05" aria-label="Posição horizontal X do móvel em metros"></label><label>Posição Z (m)<input id="itemz" type="number" step="0.05" aria-label="Posição de profundidade Z do móvel em metros"></label><button id="applyitemposition">Mover para posição</button></div>
+      <div class="selected-actions"><label>Personalizar <select id="itempart"><option value="all">Tudo</option></select><input type="color" id="partcolor" aria-label="Cor da parte selecionada"></label><button id="rotate">↻ Girar</button><label>Cor <input id="itemcolor" type="color" aria-label="Cor do móvel"></label><button id="sell">Remover</button></div>
+    </div>
+    <button id="delivery" hidden>📦 Abrir entrega <span id="deliverycount"></span></button>
+    <div id="walkcontrols" hidden><button data-walk="forward">↑</button><div><button data-walk="left">←</button><button data-walk="back">↓</button><button data-walk="right">→</button></div></div>
+  </section>
+  <aside id="settings">
+    <small>PROJETO EM ESCALA</small>
+    <h3>Ambiente real</h3>
+    <div class="setting measurements"><label>Medidas do ambiente (metros)</label><div class="measuregrid">
+      <label>Largura<input id="roomwidth" type="number" value="4" min="2" max="12" step="0.1"></label>
+      <label>Profundidade<input id="roomdepth" type="number" value="4" min="2" max="12" step="0.1"></label>
+    </div><button class="full" id="applysize">Aplicar medidas reais</button><p class="fieldhelp">1 unidade da cena = 1 metro. Os móveis preservam as próprias medidas.</p></div>
+    <div class="setting"><label class="finishlabel">Paredes <input id="wallcustom" type="color" value="#d9dfc7" aria-label="Cor das paredes"></label><div id="wallcolors" class="swatches"></div></div>
+    <div class="setting"><label for="walltarget">Aplicar cor da parede</label><select id="walltarget"><option value="all">Todas</option><option value="left">Esquerda</option><option value="right">Direita</option><option value="back">Fundo</option><option value="front">Frente</option></select><button id="applywallpaint">Aplicar cor</button></div>
+<div class="setting"><label>Piso</label><div id="floorcolors" class="swatches"></div></div>
+    <div class="setting"><label for="floorfinish">Material do piso</label><select id="floorfinish"><option value="wood">Madeira</option><option value="tile">Cerâmica</option><option value="stone">Pedra</option><option value="gravel">Pedrinhas</option><option value="concrete">Cimento</option></select><label>Cor <input type="color" id="tilecolor" value="#ae906f"></label><button id="paintfloor">Pintar quadrados</button><button id="fillfloor">Preencher tudo</button><p class="fieldhelp">Cada quadrado mede 50 cm. A ferramenta sai após pintar. Grama está nos itens da área externa.</p></div>
+<div class="setting"><label>Quintal e varanda</label><select id="fencestyle"><option value="wood">Cerca de madeira</option><option value="wall">Muro baixo</option><option value="none">Sem cercado</option></select><label>Cor do cercado e varanda <input type="color" id="fencecolor" value="#98704e"></label><label><input type="checkbox" id="balcony"> Varanda externa</label><p class="fieldhelp">Cercados se aplicam à área externa. A varanda se aplica aos ambientes internos e permite sair pelo modo Explorar.</p></div>
+<div class="setting"><label for="balconyside">Parede da varanda</label><select id="balconyside"><option value="back">Fundo</option><option value="front">Frente</option><option value="left">Esquerda</option><option value="right">Direita</option></select><label for="balconyposition">Posição da varanda <output id="balconyposlabel">50%</output></label><input id="balconyposition" type="range" min="0" max="100" value="50"><p class="fieldhelp">Arraste a varanda ou use os controles. Posicione uma porta diante dela para criar o acesso.</p></div>
+<div class="setting"><button id="adddoor">Adicionar porta</button><button id="removedoor">Remover porta principal</button><div id="extradoorlist"></div></div>
+<div class="setting"><button id="addwindow">Adicionar janela</button><p class="fieldhelp">Novas janelas usam o estilo da janela principal.</p><div id="extrawindowlist"></div></div>
+<div class="setting architecture-setting"><label class="finishlabel" for="windowstyle">Janela <input id="windowcolor" type="color" value="#f1e9d4" aria-label="Cor da janela"></label>
+      <select id="windowstyle"><option value="normal">Tradicional</option><option value="blindex">Blindex</option><option value="wood">Madeira com venezianas</option><option value="minecraft">Minecraft · blocos</option></select>
+      <label for="windowside">Parede da janela</label><select id="windowside"><option value="left">Esquerda</option><option value="right">Direita</option><option value="back">Fundo</option><option value="front">Frente</option></select>
+      <label for="windowposition" class="rangetitle">Posição <output id="windowposlabel">50%</output></label><input id="windowposition" type="range" min="0" max="100" value="50" step="1"></div>
+    <div class="setting architecture-setting"><label class="finishlabel" for="doorstyle">Porta <input id="doorcolor" type="color" value="#a4ae95" aria-label="Cor da porta"></label>
+      <select id="doorstyle"><option value="normal">Tradicional</option><option value="blindex">Blindex</option><option value="wood">Madeira</option><option value="minecraft">Minecraft · blocos</option><option value="sliding">De correr</option></select>
+      <label for="doorside">Parede da porta</label><select id="doorside"><option value="back">Fundo</option><option value="left">Esquerda</option><option value="right">Direita</option><option value="front">Frente</option></select>
+      <label for="doorposition" class="rangetitle">Posição <output id="doorposlabel">76%</output></label><input id="doorposition" type="range" min="0" max="100" value="76" step="1"></div>
+    <div class="setting promptsetting"><label for="description">Descreva suas modificações</label>
+      <textarea id="description" rows="5" placeholder="Quarto 3,5 x 4 m&#10;Porta de correr na parede direita&#10;Janela de madeira na parede do fundo&#10;Paredes azul&#10;Mover Cama Nuvem para o canto esquerdo"></textarea>
+      <button id="applydescription" class="full accent">Aplicar descrição</button><p class="fieldhelp" id="descriptionresult">Comandos locais em português: uma instrução por linha; não exige conexão com IA.</p></div>
+    <div class="setting project-actions"><label>Meu projeto</label><button id="exportproject" class="full">↓ Exportar projeto (.json)</button>
+      <label for="importproject" class="import-btn">↑ Importar projeto (.json)</label><input id="importproject" type="file" accept=".json,application/json" hidden>
+      <button id="installapp" class="full" hidden>⊞ Instalar ROOMLAB</button><button id="resetproject" class="full danger">Recomeçar projeto</button><p class="fieldhelp">Salvamento automático neste navegador. Use Exportar para fazer um backup.</p></div>
+    <div class="divider"></div><small>SEU AMBIENTE EM NÚMEROS</small><div id="stats"></div>
+    <div class="budgetbar"><div id="budgetfill"></div></div><p id="spent">R$ 0 investidos no seu espaço</p>
+    <div class="tip"><span>✳</span><strong>Planeje antes de mover.</strong><p>Teste as medidas e as posições dos seus móveis para organizar seu ambiente real.</p></div>
+    <div class="summary"><span>ITENS NESTE AMBIENTE</span><strong id="itemcount">00</strong></div>
+  </aside>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="app.js"></script>
+</body></html>

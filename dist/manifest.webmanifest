@@ -1,0 +1,10 @@
+{
+ "id":"./", "name":"ROOMLAB — Estúdio de espaços", "short_name":"ROOMLAB",
+ "description":"Simule e organize ambientes em escala real, mesmo offline.",
+ "start_url":"./", "scope":"./", "display":"standalone", "orientation":"any",
+ "background_color":"#151818", "theme_color":"#151818", "lang":"pt-BR",
+ "icons":[
+  {"src":"./icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+  {"src":"./icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+ ]
+}
